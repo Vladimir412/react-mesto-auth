@@ -1,0 +1,17 @@
+.button-avatar {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 50%;
+    border: 0;
+    padding: 0;
+    background-color: black;
+    align-self: center;
+}
+
+.button-avatar:hover {
+    cursor: pointer;
+    background-image: url(../../images/logo/pen.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30px;
+}

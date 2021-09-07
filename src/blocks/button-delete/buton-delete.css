@@ -1,0 +1,17 @@
+.buton-delete {
+  width: 100%;
+  max-width: 18px;
+  height: 15px;
+  border: 0;
+  position: absolute;
+  top: 18px;
+  right: 15px;
+  padding: 0;
+  background-color: rgba(1, 1, 1, 0);
+  cursor: pointer;
+  transition: .3s;
+}
+
+.buton-delete:hover {
+    opacity: .6;
+}

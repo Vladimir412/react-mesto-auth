@@ -1,0 +1,15 @@
+.page {
+  -webkit-font-smoothing: antialiased;
+  width: 100%;
+  background-color: #000000;
+  padding-top: 45px;
+  padding-bottom: 60px;
+  position: relative;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .page {
+    padding-top: 28px;
+    padding-bottom: 36px;
+  }
+}

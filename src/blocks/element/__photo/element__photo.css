@@ -1,0 +1,25 @@
+.element__photo {
+  width: 100%;
+  height: 282px;
+  object-fit: fill;
+  border-radius: 10px 10px 0 0;
+}
+
+.element__photo:hover {
+  cursor: pointer;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1279px) {
+  .element__photo {
+    max-height: 282px;
+    min-height: 240px;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .element__photo {
+    object-fit: contain;
+    min-height: 282px;
+    max-height: 500px;
+  }
+}
