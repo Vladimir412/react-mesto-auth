@@ -51,7 +51,7 @@ import success from '../images/success.png'
 
   React.useEffect(() => {
     tokenCheck()
-  }, [])
+  }, [isLoggedIn])
 
   const [currentUser, setCurrentUser] = React.useState({name: "", about: ""})
 
