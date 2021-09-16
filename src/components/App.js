@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Header from './Header'
+import { Redirect, Route, Switch, useHistory, Link } from 'react-router-dom';
 import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
@@ -9,10 +11,51 @@ import {CurrentUserContext} from '../contexts/CurrentUserContext';
 import EditProfilePopup  from './EditProfilePopup';
 import EditAvatarPopup  from './EditAvatarPopup';
 import AddPlacePopup  from './AddPlacePopup';
+import Login from './Login';
+import Register from './Register';
+import * as apiAuth from '../utils/apiAuth';
+import { ProtectedRoute } from './ProtectedRoute';
+import InfoTooltip from './InfoTooltip';
+import disaster from '../images/disaster.png';
+import success from '../images/success.png'
+
 
 
  export function App() {
 
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+  const handleIsLoggedIn = () => {
+    setIsLoggedIn(true)
+  }
+  
+  const history = useHistory()
+
+  const [dataUserForHomePage, setDataUserForHomePage] = React.useState({id:'', email:''})
+
+  const tokenCheck = () => {
+    if (localStorage.getItem('jwt')) {
+      const token = localStorage.getItem('jwt')
+      apiAuth.getDataUser(token)
+      .then(res => {
+        if (res) {
+          handleIsLoggedIn(true)
+          setDataUserForHomePage({
+            id: res.data._id,
+            email: res.data.email
+          })
+          history.push('/main')
+        }
+      })
+    }
+  }
+
+  React.useEffect(() => {
+    tokenCheck()
+  }, [])
+
+  console.log(isLoggedIn)
+  console.log(dataUserForHomePage)
+  console.log(history)
 
   const [currentUser, setCurrentUser] = React.useState({name: "", about: ""})
 
@@ -39,6 +82,42 @@ import AddPlacePopup  from './AddPlacePopup';
     setIsEditAvatarPopupOpen(true)
   }
 
+  const [isSuccessInfoRegister, setIsSuccessInfoRegister] = React.useState(false)
+  function handleSuccessInfoRegister() {
+    setIsSuccessInfoRegister(true)
+  }
+
+  const [isDisasterInfoRegister, setIsDisasterInfoRegister] = React.useState(false)
+  function handleDisasterInfoRegister() {
+    setIsDisasterInfoRegister(true)
+  }
+
+  function handleRegister(email, password) {
+        apiAuth.register(email, password)
+        .then(res => {
+            if (res) {
+              handleSuccessInfoRegister(true);
+                history.push('/login');
+            } 
+        })
+        .catch(err => {
+          handleDisasterInfoRegister(true)
+          console.log(err)
+        })
+  }
+
+  function handleLogin(email, password) {
+    apiAuth.login(email, password)
+    .then((res) => {
+        if (res) {
+            localStorage.setItem('jwt', res.token);
+            handleIsLoggedIn(true)
+            history.push('/main')
+        }
+    })
+    .catch(err => console.log(err))
+  }
+
   const [selectedCard, setSelectedCard] = React.useState(null)
   function handleCardClick (card) {
     setSelectedCard(card)
@@ -49,6 +128,8 @@ import AddPlacePopup  from './AddPlacePopup';
     setIsAddPlacePopupOpen(false)
     setIsEditAvatarPopupOpen(false)
     setSelectedCard(null)
+    setIsSuccessInfoRegister(false)
+    setIsDisasterInfoRegister(false)
   }
 
   const [cards, setCards] = React.useState([])
@@ -126,12 +207,44 @@ import AddPlacePopup  from './AddPlacePopup';
     .catch(res => console.log(res))
   }
 
+  const liginOut = () => {
+    localStorage.removeItem('jwt');
+    setIsLoggedIn(false)
+    history.push('/login')
+}
+
 
     return (
       <div className="page">
         <CurrentUserContext.Provider value={currentUser}>
-        <Header />
-        <Main 
+
+        <Switch>
+          <Route path="/login">
+            <Header
+              register={<Link to="/register" className="header__link">Регистрация</Link>}
+            />
+          </Route>
+          <Route path="/register">
+            <Header
+              entrance={<Link to="/login" className="header__link" >Войти</Link>}
+            />
+          </Route>
+          <Route path="/main">
+            <Header
+              email={<p className="header__link">{dataUserForHomePage.email}</p>}
+              exit={<Link onClick={liginOut} to="/login" className="header__link" >Выйти</Link>}
+            />
+          </Route>
+        </Switch> 
+        <Switch>
+        <Route path="/login">
+          <Login onLogin={handleLogin} loggedIn={isLoggedIn} />
+        </Route>  
+        <Route path="/register">
+          <Register loggedIn={isLoggedIn} onRegister={handleRegister} />
+        </Route>  
+        <ProtectedRoute path="/main"
+          component={Main}
           onEditProfile={handleEditProfileClick} 
           onAddPlace={handleAddPlaceClick} 
           onEditAvatar={handleEditAvatarClick} 
@@ -139,13 +252,20 @@ import AddPlacePopup  from './AddPlacePopup';
           cards={cards} 
           onCardLike={handleCardLike} 
           onCardDelete={handleCardDelete}
-         />
+          loggedIn={isLoggedIn}
+          />  
+          <Route exact path="/">
+            {isLoggedIn ? <Redirect to="/main" /> : <Redirect to="/login" />}
+          </Route>
+          </Switch>
         <Footer />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
         <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
         <PopupWithForm name={'popup_confirm'} title={'Вы уверены&quest;'} buttonText={'Да'} />
         <ImagePopup card={selectedCard} {...selectedCard} onClose={closeAllPopups} />
+        <InfoTooltip title="Вы успешно зарегистрировались!" link={success} name="info-tooltip" isOpen={isSuccessInfoRegister} onClose={closeAllPopups} />
+        <InfoTooltip title="Что-то пошло не так! Попробуйте ещё раз." link={disaster} name="info-tooltip" isOpen={isDisasterInfoRegister} onClose={closeAllPopups} />
         </CurrentUserContext.Provider>
       </div>
     )

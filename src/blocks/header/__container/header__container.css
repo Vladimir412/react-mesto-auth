@@ -1,0 +1,7 @@
+.header__container {
+    width: 100%;
+    max-width: 200px;
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}

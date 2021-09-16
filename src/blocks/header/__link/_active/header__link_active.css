@@ -1,0 +1,7 @@
+.header__link_active {
+    display: block;
+}
+
+.header__link_active:hover {
+    opacity: .6;
+}
