@@ -53,10 +53,6 @@ import success from '../images/success.png'
     tokenCheck()
   }, [])
 
-  console.log(isLoggedIn)
-  console.log(dataUserForHomePage)
-  console.log(history)
-
   const [currentUser, setCurrentUser] = React.useState({name: "", about: ""})
 
   React.useEffect(() => {
