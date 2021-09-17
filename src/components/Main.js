@@ -10,7 +10,9 @@ function Main(props) {
   const currentUser = React.useContext(CurrentUserContext)
   const cards = props.cards
   const arrCards = cards.map((card) => {
-    return <Card key={card.key} id={card.id} card={card} onCardClick={props.onSelectedCard} onCardLike={props.onCardLike} onCardDelete={props.onCardDelete} />
+    return (
+    <Card key={card.key} id={card.id} card={card} onCardClick={props.onSelectedCard} onCardLike={props.onCardLike} onCardDelete={props.onCardDelete} />
+    )
   })
  
     return (

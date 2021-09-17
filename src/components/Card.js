@@ -24,7 +24,7 @@ import {CurrentUserContext} from '../contexts/CurrentUserContext';
       }
 
     return (
-            <article key={card.key} className="element">
+            <article className="element">
                 <button className={cardDeleteButtonClassName} type="button" onClick={handleDeleteClick}>
                     <div className="buton-delete__image"></div>
                 </button>

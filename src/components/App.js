@@ -4,7 +4,7 @@ import { Redirect, Route, Switch, useHistory, Link } from 'react-router-dom';
 import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ImagePopup from './ImagePopup';
 import api from '../utils/Api';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
@@ -46,6 +46,7 @@ import success from '../images/success.png'
           history.push('/main')
         }
       })
+      .catch(err => console.log(err))
     }
   }
 
@@ -127,6 +128,21 @@ import success from '../images/success.png'
     setIsSuccessInfoRegister(false)
     setIsDisasterInfoRegister(false)
   }
+
+  useEffect(() => {
+    const closeOnEscape = (e) => {
+      if (e.key === 'Escape') {
+        closeAllPopups()
+      }
+    }
+    document.addEventListener('keydown', closeOnEscape);
+      
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+      
+    
+  }, [])
 
   const [cards, setCards] = React.useState([])
 
@@ -213,18 +229,8 @@ import success from '../images/success.png'
     return (
       <div className="page">
         <CurrentUserContext.Provider value={currentUser}>
-
+          {/* Честно говоря не сообразил как с Main это реализовать */}
         <Switch>
-          <Route path="/login">
-            <Header
-              register={<Link to="/register" className="header__link">Регистрация</Link>}
-            />
-          </Route>
-          <Route path="/register">
-            <Header
-              entrance={<Link to="/login" className="header__link" >Войти</Link>}
-            />
-          </Route>
           <Route path="/main">
             <Header
               email={<p className="header__link">{dataUserForHomePage.email}</p>}
@@ -234,11 +240,13 @@ import success from '../images/success.png'
         </Switch> 
         <Switch>
         <Route path="/login">
+          <Header register={<Link to="/register" className="header__link">Регистрация</Link>}/>
           <Login onLogin={handleLogin} loggedIn={isLoggedIn} />
         </Route>  
         <Route path="/register">
-          <Register loggedIn={isLoggedIn} onRegister={handleRegister} />
-        </Route>  
+          <Header entrance={<Link to="/login" className="header__link" >Войти</Link>}/>
+            <Register loggedIn={isLoggedIn} onRegister={handleRegister} />
+          </Route>  
         <ProtectedRoute path="/main"
           component={Main}
           onEditProfile={handleEditProfileClick} 

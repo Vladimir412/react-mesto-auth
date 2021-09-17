@@ -9,9 +9,7 @@ const BaseUrl = 'https://auth.nomoreparties.co'
             },
             body: JSON.stringify({email, password})
         })
-        .then((res) => {
-            return res.ok ? res.json() : Promise.reject(console.log(res))
-        })
+        .then(checkResponse)
     }
 
     export const login = (email, password) => {
@@ -22,9 +20,7 @@ const BaseUrl = 'https://auth.nomoreparties.co'
             },
             body: JSON.stringify({email, password})
         })
-        .then(res => {
-            return res.ok ? res.json() : Promise.reject(console.log(res))
-        })
+        .then(checkResponse)
         .then(data => {
             return data
         })
@@ -38,7 +34,9 @@ const BaseUrl = 'https://auth.nomoreparties.co'
                 "Authorization" : `Bearer ${token}`
             }
         })
-        .then(res => {
-            return res.ok ? res.json() : Promise.reject(console.log(res))
-        })
+        .then(checkResponse)
+    }
+
+    const checkResponse = (res) => {
+        return res.ok? res.json() : Promise.reject(console.log(res))
     }
