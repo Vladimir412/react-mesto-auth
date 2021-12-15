@@ -11,7 +11,7 @@ function AddPlacePopup(props) {
     React.useEffect(() => {
         setPlace('');
         setAddress('');
-    }, [props.onClose])
+    }, [props.isOpen])
 
     function handleChangePlace(e) {
         setPlace(e.target.value)
