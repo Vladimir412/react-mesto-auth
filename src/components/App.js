@@ -229,7 +229,6 @@ import success from '../images/success.png'
     return (
       <div className="page">
         <CurrentUserContext.Provider value={currentUser}>
-          {/* Честно говоря не сообразил как с Main это реализовать */}
         <Switch>
           <Route path="/main">
             <Header
